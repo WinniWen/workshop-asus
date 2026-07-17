@@ -1,4 +1,8 @@
+from typing import Literal
+
 from app.models import Product
+
+_SORT_FIELDS: frozenset[str] = frozenset({"id", "name", "category", "price"})
 
 PRODUCTS = [
     Product(id=1, name="Zenbook 14 OLED", category="Laptop", price=42900),
@@ -17,8 +21,8 @@ def list_products() -> list[Product]:
 def search_products(
     *,
     q: str | None = None,
-    sort: str | None = None,
-    order: str = "asc",
+    sort: Literal["id", "name", "category", "price"] | None = None,
+    order: Literal["asc", "desc"] = "asc",
     page: int = 1,
     page_size: int = 20,
 ) -> tuple[list[Product], int]:
@@ -31,6 +35,8 @@ def search_products(
         ]
 
     if sort:
+        if sort not in _SORT_FIELDS:
+            raise ValueError(f"Invalid sort field: {sort!r}")
         results = sorted(results, key=lambda p: getattr(p, sort), reverse=(order == "desc"))
 
     total = len(results)
