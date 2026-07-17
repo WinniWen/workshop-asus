@@ -60,6 +60,8 @@ def test_search_sort_and_pagination_can_be_combined(client: TestClient) -> None:
     ("params", "invalid_field"),
     [
         ({"sort": "unknown"}, "sort"),
+        ({"sort": "id"}, "sort"),
+        ({"sort": "category"}, "sort"),
         ({"order": "sideways"}, "order"),
         ({"page": 0}, "page"),
         ({"page_size": 21}, "page_size"),

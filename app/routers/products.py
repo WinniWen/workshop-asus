@@ -12,7 +12,7 @@ router = APIRouter(prefix="/products", tags=["products"])
 def read_products(
     q: Annotated[str | None, Query(min_length=1)] = None,
     sort: Annotated[
-        Literal["id", "name", "category", "price"] | None,
+        Literal["name", "price"] | None,
         Query(),
     ] = None,
     order: Annotated[Literal["asc", "desc"], Query()] = "asc",
