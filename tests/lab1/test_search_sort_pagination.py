@@ -56,6 +56,31 @@ def test_search_sort_and_pagination_can_be_combined(client: TestClient) -> None:
     ]
 
 
+def test_total_reflects_pre_pagination_match_count(client: TestClient) -> None:
+    # "laptop" matches 4 products; page 2 with page_size 2 returns only 2 items,
+    # but total must equal the full match count (4), not the page size.
+    response = client.get(
+        "/products",
+        params={
+            "q": "laptop",
+            "sort": "price",
+            "order": "asc",
+            "page": 2,
+            "page_size": 2,
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["total"] == 4
+    assert body["page"] == 2
+    assert body["page_size"] == 2
+    assert [item["name"] for item in body["items"]] == [
+        "ROG Zephyrus G14",
+        "ProArt P16",
+    ]
+
+
 @pytest.mark.parametrize(
     ("params", "invalid_field"),
     [
